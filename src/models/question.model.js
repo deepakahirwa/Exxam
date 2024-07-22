@@ -40,6 +40,10 @@ const questionSchema = new Schema({
         required: true,
         trim: true,
     },
+    idealTimeSpent: {
+        type: Number, // Time spent in seconds
+        required: true,
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin',

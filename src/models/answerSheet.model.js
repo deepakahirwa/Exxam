@@ -1,23 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const answerKeySchema = new Schema({
-    question: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question',
-        required: true,
-    },
-    studentAnswer: {
-        type: String,
-        required: true,
-    },
-    noOfVisits: {
-        type: Number,
-        default: 0,
-    },
-    actualTimeSpent: {
-        type: Number, // Time spent in seconds
-        required: true,
-    },
+const answerSheetSchema = new Schema({
     examPaper: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ExamPaper',
@@ -28,6 +11,23 @@ const answerKeySchema = new Schema({
         ref: 'Student',
         required: true,
     },
+    positiveMarks: {
+        type: Number,
+        required: true,
+    },
+    negativeMarks: {
+        type: Number,
+        required: true,
+    },
+    totalQuestions: {
+        type: Number,
+        required: true,
+    },
+    answers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'AnswerKey',
+        required: true,
+    }],
     createdAt: {
         type: Date,
         default: Date.now,
@@ -40,4 +40,4 @@ const answerKeySchema = new Schema({
     timestamps: true, // automatically manages createdAt and updatedAt
 });
 
-export const AnswerKey = mongoose.model("AnswerKey", answerKeySchema);
+export const AnswerSheet = mongoose.model("AnswerSheet", answerSheetSchema);
