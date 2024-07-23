@@ -23,6 +23,7 @@ const studentSchema = new Schema({
     phone: {
         type: String,
         unique: true,
+        required:true
     },
     address: {
         type: String,
