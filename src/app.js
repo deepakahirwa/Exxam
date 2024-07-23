@@ -24,9 +24,8 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 // Routes is start from here 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+import allroutes from './routes/index.js'
+app.use('/',allroutes);
 
 
 

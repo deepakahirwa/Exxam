@@ -32,7 +32,7 @@ const adminSchema = new Schema({
         enum: ["M", "F", "Other"],
     },
     dob: {
-        type: Date,
+        type: String,
         required: true,
     },
     role: {
