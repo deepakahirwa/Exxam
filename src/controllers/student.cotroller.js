@@ -2,12 +2,13 @@ import { Student } from '../models/student.model.js';
 import { uplaodOnCloudinary } from '../utils/cloudinary.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
-
+import { asyncHandler } from '../utils/asyncHandler.js';
 // Generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
+    console.log(userId);
     try {
         const user = await Student.findById(userId);
-
+        console.log("generateAccessAndRefreshTokens",user);
         if (!user) {
             throw new ApiError(401, "User not found");
         }
@@ -26,29 +27,30 @@ const generateAccessAndRefreshTokens = async (userId) => {
 
 // Create a new student
 export const createStudent = async (req, res) => {
-    const { name, email, password, phone, address, gender, dob, course ,rollno} = req.body;
+    const { name, email, password, phone, address, gender, dob, course, rollno } = req.body;
     try {
         if ([name, email, password, phone, address, gender, dob].some((field) => field?.trim() === "")) {
+            console.log("sdfghbfdsdfgvh");
             throw new ApiError(400, "All fields are required");
         }
 
         const existingStudent = await Student.findOne({ $or: [{ phone }, { email }] });
-        console.log(existingStudent);
+        // console.log(existingStudent);
         if (existingStudent) {
             throw new ApiError(409, "User already exists with this email or phone number");
         }
 
         const imagePath = req.files?.avatar[0]?.path;
         const image = await uplaodOnCloudinary(imagePath);
-        console.log(image.url);
+        // console.log(image.url);
         if (!image) {
             throw new ApiError(400, "Avatar is required for registration");
         }
-        
+
         const student = await Student.create({
-            name, email, password, phone, address, gender, dob, course,rollno, image: image.url
+            name, email, password, phone, address, gender, dob, course, rollno, image: image.url
         });
-        console.log(student);
+        // console.log(student);
         return res.status(200).json(new ApiResponse(200, student, "Student registered successfully"));
     } catch (error) {
         throw new ApiError(500, "Something went wrong with the server");
@@ -81,7 +83,7 @@ export const getStudentById = async (req, res) => {
 // Update a student
 export const updateStudent = async (req, res) => {
     const { name, email, phone, address, gender, dob, course } = req.body;
-    
+
     try {
         const student = await Student.findById(req.params.id);
         if (!student) {
@@ -130,9 +132,13 @@ export const deleteStudent = async (req, res) => {
 // Student login
 export const loginStudent = async (req, res) => {
     const { email, phone, password } = req.body;
-
+    console.log(email, password);
+    if(!email||!password){
+        throw new ApiError(400, "Please enter email and password");
+    }
     try {
         const student = await Student.findOne({ $or: [{ email }, { phone }] });
+        console.log(student);
         if (!student) {
             throw new ApiError(400, "Student does not exist");
         }
