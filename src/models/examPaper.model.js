@@ -17,31 +17,31 @@ const examPaperSchema = new Schema({
     },
     syllabus: {
         type: String,
-        required: true,
+       
         trim: true,
     },
     totalMarks: {
         type: Number,
-        required: true,
+       
     },
     duration: {
         type: Number, // Duration in minutes
-        required: true,
+        
     },
     scheduleDate: {
         type: Date,
-        required: true,
+      
     },
     
     questions: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Question',
-        required: true,
+       
     }],
     eligibleStudents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student', // Assuming you have a Student model
-        required: true,
+       
     }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
