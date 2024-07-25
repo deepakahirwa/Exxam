@@ -6,20 +6,18 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 // Create a new answer key
 export const createAnswerKey = asyncHandler(async (req, res) => {
     try {
-        const { question, studentAnswer, actualTimeSpent, examPaper } = req.body;
+        const { question,examPaper } = req.body;
 
-        if (!question || !studentAnswer || !actualTimeSpent || !examPaper) {
+        if (!question || !examPaper) {
             throw new ApiError(400, "All fields are required.");
         }
 
         const student = req.student._id;
         const answerKey = new AnswerKey({
             question,
-            studentAnswer,
-            actualTimeSpent,
-            examPaper,
             student,
-            noOfVisits: req.body.noOfVisits || 0
+            examPaper,
+            noOfVisits: 0
         });
 
         await answerKey.save();
@@ -32,7 +30,7 @@ export const createAnswerKey = asyncHandler(async (req, res) => {
 // Update an existing answer key
 export const updateAnswerKey = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { studentAnswer, actualTimeSpent, noOfVisits } = req.body;
+    const { studentAnswer, actualTimeSpent,} = req.body;
 
     try {
         const answerKey = await AnswerKey.findById(id);
@@ -45,8 +43,8 @@ export const updateAnswerKey = asyncHandler(async (req, res) => {
         }
 
         answerKey.studentAnswer = studentAnswer || answerKey.studentAnswer;
-        answerKey.actualTimeSpent = actualTimeSpent || answerKey.actualTimeSpent;
-        answerKey.noOfVisits = noOfVisits || answerKey.noOfVisits;
+        answerKey.actualTimeSpent += actualTimeSpent;
+        answerKey.noOfVisits += 1;
 
         await answerKey.save();
         return res.status(200).json(new ApiResponse(200, answerKey, "Answer key updated successfully"));

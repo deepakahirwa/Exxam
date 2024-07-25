@@ -8,7 +8,7 @@ const answerKeySchema = new Schema({
     },
     studentAnswer: {
         type: String,
-        required: true,
+        // required: true,
     },
     noOfVisits: {
         type: Number,
@@ -16,7 +16,7 @@ const answerKeySchema = new Schema({
     },
     actualTimeSpent: {
         type: Number, // Time spent in seconds
-        required: true,
+        // required: true,
     },
     examPaper: {
         type: mongoose.Schema.Types.ObjectId,
