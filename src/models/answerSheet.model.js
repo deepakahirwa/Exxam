@@ -13,11 +13,11 @@ const answerSheetSchema = new Schema({
     },
     positiveMarks: {
         type: Number,
-        required: true,
+        // required: true,
     },
     negativeMarks: {
         type: Number,
-        required: true,
+        // required: true,
     },
     totalQuestions: {
         type: Number,
@@ -26,7 +26,7 @@ const answerSheetSchema = new Schema({
     answers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AnswerKey',
-        required: true,
+        // required: true,
     }],
     createdAt: {
         type: Date,
