@@ -2,7 +2,7 @@ import { ExamPaper } from "../models/examPaper.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-
+import { Question } from "../models/question.model.js"
 
 // Create an exam paper
 export const createExamPaper = asyncHandler(async (req, res) => {
@@ -59,7 +59,7 @@ export const getExamPaperById = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiError(500, error.message || "Something went wrong with the server"));
     }
 });
-
+    
 // Update an exam paper
 export const updateExamPaper = asyncHandler(async (req, res) => {
     const { title, description, subject, syllabus, totalMarks, duration, scheduleDate, questions, eligibleStudents, teacher } = req.body;
@@ -109,3 +109,102 @@ export const deleteExamPaper = asyncHandler(async (req, res) => {
         return res.status(500).json(new ApiError(500, error.message || "Something went wrong with the server"));
     }
 });
+
+// Add a question to an exam paper
+export const addQuestionToExamPaper = asyncHandler(async (req, res) => {
+    try {
+        const { examPaperId, questionId } = req.params;
+
+        // console.log('ExamPaper ID:', examPaperId);
+        // console.log('Question ID:', questionId);
+
+        const examPaper = await ExamPaper.findById(examPaperId);
+        console.log('ExamPaper:', examPaper);
+
+        if (!examPaper) {
+            throw new ApiError(404, "Exam paper not found");
+        }
+
+        const question = await Question.findById(questionId);
+        console.log('Question:', question);
+
+        if (!question) {
+            throw new ApiError(404, "Question not found");
+        }
+
+        // console.log('Question Created By:', question.createdBy);
+        // console.log('Admin ID:', req.admin._id);
+        // console.log('ExamPaper Created By:', examPaper.createdBy);
+
+        // Ensure the admin is authorized to add this question
+        if (question.createdBy.toString() !== req.admin._id.toString() || examPaper.createdBy.toString() !== req.admin._id.toString()) {
+            // console.log("Admin is not authorized");
+            throw new ApiError(403, "You are not authorized to add this question to this exam");
+        }
+
+        if (!examPaper.questions.includes(questionId)) {
+            // console.log("Adding question to exam paper");
+
+            examPaper.questions.push(questionId);
+            await examPaper.save();
+            return res.status(200).json(new ApiResponse(200, examPaper, "Question added to exam paper successfully"));
+        }
+
+        console.log("Question already added to the exam paper");
+
+        return res.status(200).json(new ApiResponse(200, null, "Question already added"));
+
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json(new ApiError(500, error.message || "Something went wrong"));
+    }
+});
+
+// Remove a question from an exam paper
+export const removeQuestionFromExamPaper = asyncHandler(async (req, res) => {
+    try {
+        const { examPaperId, questionId } = req.params;
+
+        // console.log('ExamPaper ID:', examPaperId);
+        // console.log('Question ID:', questionId);
+
+        const examPaper = await ExamPaper.findById(examPaperId);
+        // console.log('ExamPaper:', examPaper);
+
+        if (!examPaper) {
+            throw new ApiError(404, "Exam paper not found");
+        }
+
+        const question = await Question.findById(questionId);
+        // console.log('Question:', question);
+
+        if (!question) {
+            throw new ApiError(404, "Question not found");
+        }
+
+        // console.log('Question Created By:', question.createdBy);
+        // console.log('Admin ID:', req.admin._id);
+        // console.log('ExamPaper Created By:', examPaper.createdBy);
+
+        // Ensure the admin is authorized to remove this question
+        if (question.createdBy.toString() !== req.admin._id.toString() || examPaper.createdBy.toString() !== req.admin._id.toString()) {
+            // console.log("Admin is not authorized");
+            throw new ApiError(403, "You are not authorized to remove this question from this exam");
+        }
+
+        const questionIndex = examPaper.questions.indexOf(questionId);
+        if (questionIndex === -1) {
+            throw new ApiError(404, "Question not found in this exam paper");
+        }
+
+        // console.log("Removing question from exam paper");
+        examPaper.questions.splice(questionIndex, 1);
+        await examPaper.save();
+
+        return res.status(200).json(new ApiResponse(200, examPaper, "Question removed from exam paper successfully"));
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json(new ApiError(500, error.message || "Something went wrong"));
+    }
+});
+

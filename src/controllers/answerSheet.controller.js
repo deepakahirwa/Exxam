@@ -6,9 +6,9 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 // Create a new answer sheet
 export const createAnswerSheet = asyncHandler(async (req, res) => {
     try {
-        const { examPaper ,totalQuestions} = req.body;
+        const { examPaper, totalQuestions } = req.body;
         // console.log(examPaper);
-        if (!examPaper||!totalQuestions) {
+        if (!examPaper || !totalQuestions) {
             throw new ApiError(400, "examPaper fields are required.");
         }
         const student = req.student._id;
@@ -20,7 +20,7 @@ export const createAnswerSheet = asyncHandler(async (req, res) => {
         });
         // console.log(answerSheet);
         // await answerSheet.save();
-        if(!answerSheet){
+        if (!answerSheet) {
             throw new ApiError(400, "Answer sheet not created");
         }
         return res.status(201).json(new ApiResponse(201, answerSheet, "Answer sheet created successfully"));
@@ -108,6 +108,42 @@ export const admingetallanswerSheet = asyncHandler(async (req, res) => {
 });
 
 
+// add answer in answer sheet 
+
+export const addAnswer = asyncHandler(async (req, res) => {
+    try {
+        const { examPaper } = req.params;
+        const { answer } = req.body;
+
+        if (!answer) {
+            throw new ApiError(400, "Answer is required");
+        }
+
+        const answerSheet = await AnswerSheet.findOne({ examPaper, student: req.student._id });
+
+        if (!answerSheet) {
+            throw new ApiError(404, "Answer sheet not found");
+        }
+
+        const isAnswerAlreadyInserted = answerSheet.answers.some(inserted_answer => inserted_answer == answer);
+
+        if (isAnswerAlreadyInserted) {
+            console.log("already inserted_answer");
+            throw new ApiError(400, "Answer already inserted");
+        }
+
+        answerSheet.answers.push(answer);
+        await answerSheet.save();
+
+        return res.status(200).json(new ApiResponse(200, answerSheet, "Answer added successfully"));
+    } catch (error) {
+        if (error instanceof ApiError) {
+            return res.status(error.statusCode).json(error);
+        }
+        return res.status(500).json(new ApiError(500, error.message || "Something went wrong"));
+    }
+});
+
 // Delete an answer sheet
 export const deleteAnswerSheet = asyncHandler(async (req, res) => {
     try {
@@ -126,3 +162,5 @@ export const deleteAnswerSheet = asyncHandler(async (req, res) => {
         throw new ApiError(500, error.message || "Something went wrong with the server");
     }
 });
+
+

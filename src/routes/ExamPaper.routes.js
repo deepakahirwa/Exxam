@@ -4,7 +4,9 @@ import {
     getExamPapers,
     getExamPaperById,
     updateExamPaper,
-    deleteExamPaper
+    deleteExamPaper,
+    addQuestionToExamPaper,
+    removeQuestionFromExamPaper
 } from '../controllers/ExamPaper.controller.js';
 import { verifyAdminJWT } from '../middleware/admin.auth.middleware.js';
 import { upload } from '../middleware/multer.middleware.js';
@@ -25,5 +27,11 @@ router.put('/update/:id', verifyAdminJWT, updateExamPaper);
 
 // Route to delete an exam paper (protected route)
 router.delete('/delete/:id', verifyAdminJWT, deleteExamPaper);
+
+// Route to add a question to an exam paper
+router.post('/add-question/:examPaperId/:questionId', verifyAdminJWT, addQuestionToExamPaper);
+
+// Route to remove a question from an exam paper
+router.delete('/remove-question/:examPaperId/:questionId', verifyAdminJWT, removeQuestionFromExamPaper);
 
 export default router;

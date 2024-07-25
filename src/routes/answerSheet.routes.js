@@ -1,5 +1,5 @@
 import express from 'express';
-import { createAnswerSheet, updateAnswerSheet, getAnswerSheets, getAnswerSheetById, deleteAnswerSheet } from '../controllers/answerSheet.controller.js';
+import { createAnswerSheet, updateAnswerSheet, getAnswerSheets, getAnswerSheetById, deleteAnswerSheet ,addAnswer} from '../controllers/answerSheet.controller.js';
 import { verifyStudentJWT } from '../middleware/student.auth.middleware.js';
 
 const router = express.Router();
@@ -15,6 +15,9 @@ router.get('/get-all', verifyStudentJWT, getAnswerSheets);
 
 // Route to get a single answer sheet by ID
 router.get('/get/:id', verifyStudentJWT, getAnswerSheetById);
+
+// Route to add an answer to an answer sheet
+router.post('/add-answer/:examPaper', verifyStudentJWT, addAnswer);
 
 // Route to delete an answer sheet
 router.delete('/delete/:id', verifyStudentJWT, deleteAnswerSheet);
