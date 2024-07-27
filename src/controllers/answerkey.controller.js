@@ -6,7 +6,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 // Create a new answer key
 export const createAnswerKey = asyncHandler(async (req, res) => {
     try {
-        const { question,examPaper } = req.body;
+        const { question, examPaper } = req.body;
 
         if (!question || !examPaper) {
             throw new ApiError(400, "All fields are required.");
@@ -30,7 +30,7 @@ export const createAnswerKey = asyncHandler(async (req, res) => {
 // Update an existing answer key
 export const updateAnswerKey = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const { studentAnswer, actualTimeSpent,} = req.body;
+    const { studentAnswer, actualTimeSpent, } = req.body;
 
     try {
         const answerKey = await AnswerKey.findById(id);
@@ -70,7 +70,7 @@ export const getAnswerKeyById = asyncHandler(async (req, res) => {
         if (!answerKey) {
             throw new ApiError(404, "Answer key not found");
         }
-        console.log(answerKey.student,req.student._id);
+        console.log(answerKey.student, req.student._id);
         if (answerKey.student.toString() !== req.student._id.toString()) {
             throw new ApiError(403, "You are not authorized to view this answer key");
         }

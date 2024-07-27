@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
+import mongooseAggregatePaginate from "mongoose-paginate-v2";
 const examPaperSchema = new Schema({
     title: {
         type: String,
@@ -9,7 +9,7 @@ const examPaperSchema = new Schema({
     description: {
         type: String,
         trim: true,
-    },
+    }, 
     subject: {
         type: String,
         required: true,
@@ -17,31 +17,31 @@ const examPaperSchema = new Schema({
     },
     syllabus: {
         type: String,
-       
+
         trim: true,
     },
     totalMarks: {
         type: Number,
-       
+
     },
     duration: {
         type: Number, // Duration in minutes
-        
+
     },
     scheduleDate: {
         type: Date,
-      
+
     },
-    
+
     questions: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Question',
-       
+
     }],
     eligibleStudents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student', // Assuming you have a Student model
-       
+
     }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -68,5 +68,5 @@ const examPaperSchema = new Schema({
 }, {
     timestamps: true, // automatically manages createdAt and updatedAt
 });
-
+examPaperSchema.plugin(mongooseAggregatePaginate);
 export const ExamPaper = mongoose.model("ExamPaper", examPaperSchema);

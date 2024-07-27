@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Question } from "../models/question.model.js"
-
+import { Result } from "../models/result.model.js";
 // Create an exam paper
 export const createExamPaper = asyncHandler(async (req, res) => {
     const { title, description, subject, syllabus, totalMarks, duration, scheduleDate, questions, eligibleStudents, teacher } = req.body;
@@ -27,6 +27,7 @@ export const createExamPaper = asyncHandler(async (req, res) => {
         });
 
         await examPaper.save();
+        await Result.create({ExamPaper:examPaper._id});
         return res.status(201).json(new ApiResponse(201, examPaper, "Exam Paper created successfully"));
     } catch (error) {
         return res.status(500).json(new ApiError(500, error.message || "Something went wrong with the server"));

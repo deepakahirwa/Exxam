@@ -5,10 +5,10 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 // Generate access and refresh tokens
 const generateAccessAndRefreshTokens = async (userId) => {
-    console.log(userId);
+    // console.log(userId);
     try {
         const user = await Student.findById(userId);
-        console.log("generateAccessAndRefreshTokens",user);
+        // console.log("generateAccessAndRefreshTokens", user);
         if (!user) {
             throw new ApiError(401, "User not found");
         }
@@ -132,13 +132,13 @@ export const deleteStudent = async (req, res) => {
 // Student login
 export const loginStudent = async (req, res) => {
     const { email, phone, password } = req.body;
-    console.log(email, password);
-    if(!email||!password){
+    // console.log(email, password);
+    if (!email || !password) {
         throw new ApiError(400, "Please enter email and password");
     }
     try {
         const student = await Student.findOne({ $or: [{ email }, { phone }] });
-        console.log(student);
+        // console.log(student);
         if (!student) {
             throw new ApiError(400, "Student does not exist");
         }

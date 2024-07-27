@@ -5,7 +5,7 @@ import examPaperRoutes from './ExamPaper.routes.js';
 import questionRoutes from './question.routes.js';
 import answerKeyRoutes from './answerkey.routes.js';
 import answerSheetRoutes from './answerSheet.routes.js';
-
+import resultRoutes from './result.routes.js'
 // Create a router
 const router = express.Router();
 
@@ -16,5 +16,5 @@ router.use('/exampapers', examPaperRoutes);
 router.use('/question', questionRoutes);
 router.use('/answerkey', answerKeyRoutes);
 router.use('/answersheet', answerSheetRoutes);
-
+router.use('/result',resultRoutes);
 export default router;

@@ -1,4 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-paginate-v2"
+import { type } from "os";
+
 
 const answerSheetSchema = new Schema({
     examPaper: {
@@ -23,6 +26,10 @@ const answerSheetSchema = new Schema({
         type: Number,
         required: true,
     },
+    totalAnswergiven: {
+        type: Number,
+        default: 0
+    },
     answers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AnswerKey',
@@ -36,8 +43,14 @@ const answerSheetSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    isSubmitted :{
+        type:Boolean,
+        default:false
+    },
 }, {
     timestamps: true, // automatically manages createdAt and updatedAt
 });
+
+answerSheetSchema.plugin(mongooseAggregatePaginate)
 
 export const AnswerSheet = mongoose.model("AnswerSheet", answerSheetSchema);
